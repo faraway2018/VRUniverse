@@ -38,6 +38,15 @@ public class PlanetController : MonoBehaviour
     //Contains the tutorials to describe controls on the right controller (the pointer for selecting planets)
 	private Image[] tutorialsOnRightController;
 
+    //Place the default shader of the planet here
+    public Shader shader1;
+
+    //Place the highlight shader here
+    public Shader shader2;
+
+    // renderer of this object
+    Renderer rend;
+
     /*
      * ToggleMenu: Toggles the planet description floating menu whenever the user points at a planet
      * Parameters: bool status - true if the menu should be visible
@@ -82,10 +91,21 @@ public class PlanetController : MonoBehaviour
 		// Get Tutorials on right controller
 		tutorialsOnRightController = rightController.GetComponentsInChildren<Image>(true);
 
+        // Get the renderer on start
+        rend = GetComponent<Renderer>();
 	}
 
     protected void Update()
     {
+        if (Input.GetKeyDown(KeyCode.H)) {
+            Highlight("hover");
+        }
+        if (Input.GetKeyDown(KeyCode.G)) {
+            Highlight("selected");
+        }
+        if (Input.GetKeyUp(KeyCode.J)) {
+            Highlight("none");
+        }
         PositionMenus();
     }
 
@@ -258,5 +278,23 @@ public class PlanetController : MonoBehaviour
         ToggleMenu(false);
         
     }
-    
+
+    private void Highlight(string version) {
+        switch (version)
+        {
+            case "hover":
+                rend.material.shader = shader2;
+                rend.material.SetColor("_OutlineColor", new Color32(43, 255, 233, 255));
+                rend.material.SetFloat("_Outline", (float)0.04);
+                break;
+            case "selected":
+                rend.material.shader = shader2;
+                rend.material.SetColor("_OutlineColor", new Color32(24, 249, 51, 255));
+                rend.material.SetFloat("_Outline", (float)0.04);
+                break;
+            default:
+                rend.material.shader = shader1;
+                break;
+        }
+    }  
 }
